@@ -7,14 +7,14 @@ Installation
 ============
 In the console (Terminal) go to this directory.
 
-* Create the build folder: --'mkdir build'
+* Create the build folder: -- `mkdir build`
 
-* Go into the build folder: --'cd build'
+* Go into the build folder: -- `cd build`
 
-* Configure the build using cmake: --'cmake ..'
+* Configure the build using cmake: -- `cmake ..`
 
-* Build the poject using make: --'make'
+* Build the poject using make: -- `make`
 
-* Execute the project: --'./Converter ../example.stl'
+* Execute the project: -- `./Converter ../example.stl`
 
 
