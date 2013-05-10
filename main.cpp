@@ -1,18 +1,39 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
+typedef struct _Triange {
+    float normal[3];
+    float vertex1[3];
+    float vertex2[3];
+    float vectex3[3];
+    short s=0;
+} Triangle;
+
 int readSTL(string fileName){
     cout << "Reading stl..." << endl;
+
+    vector<Triangle> mesh;
+
     return 0;
 }
 
 int writeDAE(string fileName){
     cout << "Exporting dae..." << endl;
     ofstream file;
-    file.open(fileName);
-    file << "blub";
+    file.open(fileName.c_str());
+
+    file << "<COLLADA>" << endl;
+    file << "   <library_geometries>" << endl;
+    file << "      <geometry>" << endl;
+    file << "         <mesh>" << endl;
+    file << "         </mesh>" << endl;
+    file << "      </geometry>" << endl;
+    file << "   </library_geometries>" << endl;
+    file << "</COLLADA>" << endl;
+
     file.close();
     return 0;
 }
