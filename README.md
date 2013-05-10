@@ -5,7 +5,7 @@ Converter converts different file formats into other file formats.
 
 Installation
 ============
-In the console (Terminal) go to this directory.
+In the console (Terminal) go to the directory of this README.
 
 * Create the build folder: `mkdir build`
 

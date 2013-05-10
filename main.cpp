@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -9,6 +10,10 @@ int readSTL(string fileName){
 
 int writeDAE(string fileName){
     cout << "Exporting dae..." << endl;
+    ofstream file;
+    file.open(fileName);
+    file << "blub";
+    file.close();
     return 0;
 }
 
