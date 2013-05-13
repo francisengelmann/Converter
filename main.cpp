@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
+using namespace boost;
 
 typedef struct _Triange {
     float normal[3];
@@ -15,8 +17,15 @@ typedef struct _Triange {
 vector<Triangle> mesh;
 unsigned int numberOfTriangles;
 
-int readSTL(char* fileName){
-    cout << "Reading stl..." << endl;
+int readSTLAscii(char* fileName){
+    ifstream file;
+    file.open(fileName);
+    if (file.is_open()){
+
+    }
+}
+
+int readSTLBinary(char* fileName){
     ifstream file (fileName, ios::in|ios::binary|ios::ate);
 
     if (file.is_open()){
@@ -28,8 +37,9 @@ int readSTL(char* fileName){
         file.seekg(80);
         //read total number of triangles
         file.read((char *)&numberOfTriangles, sizeof(unsigned int));
-
+        cout << "Number of triangles: " << numberOfTriangles << endl;
         for(unsigned int i=0; i<numberOfTriangles; i++){
+            //if ( (numberOfTriangles/(i+1)) % 10 == 1) cout << ".";
             Triangle t;
             file.read((char *)&t.normal[0], sizeof(float));
             file.read((char *)&t.normal[1], sizeof(float));
@@ -46,7 +56,6 @@ int readSTL(char* fileName){
             file.read((char *)&t.s, sizeof(unsigned short));
             mesh.push_back(t);
         }
-
         cout << endl;
     }else{
         cout << "Error: could not open file " << fileName << endl;
@@ -58,91 +67,40 @@ int readSTL(char* fileName){
     return 1;
 }
 
+int readSTL(char * fileName){
+    cout << "STL file: " <<  fileName << endl;
+    ifstream file;
+    file.open(fileName);
+    if (file.is_open()){
+        string line1, line2;
+        vector<string> strings1, strings2;
+        getline(file,line1);
+        getline(file,line2);
+        trim(line1);
+        trim(line2);
+        split(strings1, line1, is_any_of(" "));
+        split(strings2, line2, is_any_of(" "));
+        if(!strings1[0].compare("solid") && !strings2[0].compare("facet")){
+            cout << "Interpreting as ascii STL file." << endl;
+            readSTLAscii(fileName);
+        }else{
+            cout << "Interpreting as binary STL file." << endl;
+            readSTLBinary(fileName);
+        }
+    }
+    file.close();
+    return 1;
+}
+
 int writeDAE(string fileName){
     cout << "Exporting dae..." << endl;
+    if(numberOfTriangles==0)
+    {
+        cout << "ERROR: number of read triangles is zero. No data available to export." << endl;
+        return 0;
+    }
     ofstream file;
     file.open(fileName.c_str(),ios::trunc|ios::out);
-
-/*    file << "<COLLADA>" << endl;
-    file << "<library_geometries>" << endl;
-
-    //one geometry per object in the scene
-    file << "<geometry>" << endl;
-    file << "<mesh>" << endl;
-
-//---------------------------------------------------------------------------
-//contains vertex coordinates
-//---------------------------------------------------------------------------
-    file << "<source id='mesh-vertices'>" << endl;
-    file << "<float_array id='mesh-vertices-array' count='"<< numberOfTriangles*3*3 <<"'>" << endl;
-    for(unsigned int i=0; i<numberOfTriangles; i++){
-   //     file << mesh[i].vertex0[0] << " " << mesh[i].vertex0[1] << " " << mesh[i].vertex0[2] << endl;
-   //     file << mesh[i].vertex1[0] << " " << mesh[i].vertex1[1] << " " << mesh[i].vertex1[2] << endl;
-     //   file << mesh[i].vertex2[0] << " " << mesh[i].vertex2[1] << " " << mesh[i].vertex2[2] << endl;
-    }
-    file << "</float_array>" << endl;
-    file << "<technique_common>";
-    file << "<accessor source='#mesh-vertices-array' count='"<< numberOfTriangles*3 <<"' stride='3'>" << endl;
-    file << "<param name='X' type='float'/>" << endl;
-    file << "<param name='Y' type='float'/>" << endl;
-    file << "<param name='Z' type='float'/>" << endl;
-    file << "</accessor>" << endl;
-    file << "</technique_common>";
-    file << "</source>" << endl;
-
-//---------------------------------------------------------------------------
-//contains vertex normals
-//---------------------------------------------------------------------------
-    file << "<source id='mesh-normals'>" << endl;
-    file << "<float_array id='mesh-normals-array' count='"<< numberOfTriangles*3 <<"'>" << endl;
-    for(unsigned int i=0; i<numberOfTriangles; i++){
-    //    file << mesh[i].normal[0] << ' ' << mesh[i].normal[1] << ' ' << mesh[i].normal[2] << endl;
-    }
-    file << "</float_array>" << endl;
-    file << "<technique_common>";
-    file << "<accessor source='#mesh-normals-array' count='"<< numberOfTriangles*3 <<"' stride='3'>" << endl;
-    file << "<param name='X' type='float'/>" << endl;
-    file << "<param name='Y' type='float'/>" << endl;
-    file << "<param name='Z' type='float'/>" << endl;
-    file << "</accessor>" << endl;
-    file << "</technique_common>";
-    file << "</source>" << endl;
- //---------------------------------------------------------------------------
- // vertices
- //---------------------------------------------------------------------------
-    file << "<vertices id='vertices'>" << endl;
-    file << "<input semantic='POSITION' id='mesh-vertices'>" << endl;
-    file << "</vertices>" << endl;
-
-//---------------------------------------------------------------------------
-//contains vertex normals
-//---------------------------------------------------------------------------
-    file << "<triangles count='"<< numberOfTriangles <<"'>" << endl;
-    file << "<input offset='0' semantic='VERTEX' source='#ID7'>" << endl;
-    file << "<input offset='1' semantic='NORMAL' source='#ID6'>" << endl;
-    file << "<p>" << endl;
-
-    for(unsigned int i=0; i<numberOfTriangles*3; i+=3){
-       // file << i << " " << (int)(i/(int)3) << " ";
-    }
-
-    file << "</p>" << endl;
-    file << "</triangles>" << endl;
-//---------------------------------------------------------------------------
-    file << "</mesh>" << endl;
-    file << "</geometry>" << endl;
-    file << "</library_geometries>" << endl;
-    file << "</COLLADA>" << endl;
-
-    file.close();
-
-    cout << "Triangels in mesh: "<<mesh.size() << endl;
-    for(unsigned int i=0; i<numberOfTriangles; i++){
-        //cout << mesh[i].normal[0] <<" "<< mesh[i].normal[1]  <<" "<<mesh[i].normal[2] <<endl;
-        //cout << mesh[i].vertex0[0] <<" "<< mesh[i].vertex0[1]  <<" "<<mesh[i].vertex0[2] <<endl;
-        //cout << mesh[i].vertex1[0] <<" "<< mesh[i].vertex1[1]  <<" "<<mesh[i].vertex1[2] <<endl;
-        //cout << mesh[i].vertex2[0] <<" "<< mesh[i].vertex2[1]  <<" "<<mesh[i].vertex2[2] <<endl;
-    }*/
 
     file <<"<?xml version='1.0' encoding='utf-8'?>" << endl;
     file <<"<COLLADA xmlns='http://www.collada.org/2005/11/COLLADASchema' version='1.4.1'>" << endl;
@@ -180,9 +138,9 @@ int writeDAE(string fileName){
     file <<"                    <float_array id='mesh-normals-array' count='" <<numberOfTriangles*3 << "'>" << endl;
 
     for(unsigned int i=0; i<numberOfTriangles; i++){
-        file << mesh[i].normal[0] <<" "<< mesh[i].normal[1]  <<" "<<mesh[i].normal[2] <<endl;
+        file << mesh[i].normal[0]*(-1) <<" "<< mesh[i].normal[1]*(-1)  <<" "<<mesh[i].normal[2]*(-1) <<endl;
+        //file << 0 << " " << 0 << " " << 1 <<endl;
     }
-
 
     //file <<"0.000171171 -0.000171171 1 0 0 1 0.000342342 -0.000342342 1" << endl;
 
@@ -198,18 +156,18 @@ int writeDAE(string fileName){
     file <<"                <vertices id='mesh-vertices'>" << endl;
     file <<"                    <input semantic='POSITION' source='#mesh-positions'/>" << endl;
     file <<"                </vertices>" << endl;
-    //file <<"                <triangles count='2'>" << endl;
-    file <<"                <triangles count='"<< numberOfTriangles << "'>" << endl;
+    file <<"                <triangles count='2'>" << endl;
+    //file <<"                <triangles count='"<< numberOfTriangles << "'>" << endl;
     file <<"                    <input offset='0' semantic='VERTEX' source='#mesh-vertices'/>" << endl;
     file <<"                    <input offset='1' semantic='NORMAL' source='#mesh-normals'/>" << endl;
     file <<"                    <p>" << endl;
 
     for(unsigned int i=0; i<numberOfTriangles*3; i+=3){
-        file << i+0 << " " << (int)(i/3) << " " << i+1 << " " << (int)(i/3) << " " << i+2 << " " << (int)(i/3) << endl;
+        file << i+1 << " " << (int)(i/3) << " " << i+2 << " " << (int)(i/3) << " " << i+0 << " " << (int)(i/3) << endl;
     }
 
-    //file <<"                    3 0  1 1  0 0" << endl;
-    //file <<"                    2 2  3 0  0 0" << endl;
+    file <<"                    1 0  0 0  3 0" << endl;
+    //file <<"                    3 1  1 1  2 1" << endl;
 
     file <<"                    </p>" << endl;
     file <<"                </triangles>" << endl;
@@ -228,7 +186,6 @@ int writeDAE(string fileName){
     file <<"    </scene>" << endl;
     file <<"</COLLADA>";
 
-
     return 1;
 }
 
@@ -238,6 +195,7 @@ void printUsage(){
 
 int main(int argc, char* args[])
 {
+    numberOfTriangles = 0;
     switch(argc){
         case 3: //normal behavior
             if(!readSTL(args[1])) return 1;
@@ -248,7 +206,7 @@ int main(int argc, char* args[])
             if(!writeDAE("output.dae")) return 1;
             break;
         case 1:
-            cout << "No input file specified!" << endl;
+            cout << "ERROR: No input file specified!" << endl;
             printUsage();
             return 1;
             break;
