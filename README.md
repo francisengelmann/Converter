@@ -3,6 +3,10 @@ Converter
 
 Converter converts different file formats into other file formats.
 
+Currently supported:
+
+STL -> DAE
+
 Installation
 ============
 In the console (Terminal) go to the directory of this README.
