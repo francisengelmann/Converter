@@ -2,10 +2,9 @@ Converter
 =========
 
 Converter converts different file formats into other file formats.
-
 Currently supported file formats:
 
-* STL (ascii/binary) -> DAE
+* STL (ascii/binary) --> DAE
 
 Installation
 ============
