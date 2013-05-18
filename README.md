@@ -5,11 +5,11 @@ Converter converts different file formats into other file formats.
 
 Currently supported:
 
-STL -> DAE
+* STL -> DAE
 
 Installation
 ============
-In the console (Terminal) go to the directory of this README.
+In the console (e.g. Terminal) go to the directory of this README file.
 
 * Create the build folder: `mkdir build`
 

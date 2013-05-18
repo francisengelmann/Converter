@@ -150,7 +150,7 @@ int readSTLBinary(char* fileName){
 }
 
 int readSTL(char * fileName){
-    cout << "STL file: " <<  fileName << endl;
+    cout << "=== Converting " <<  fileName << " ===" << endl;
     ifstream file;
     file.open(fileName);
     if (file.is_open()){
@@ -262,7 +262,7 @@ int writeDAE(string fileName){
     file <<"        <instance_visual_scene url='#mesh-scene'/>" << endl;
     file <<"    </scene>" << endl;
     file <<"</COLLADA>" << endl;
-    cout << "==DONE==" << endl;
+    cout << "== DONE ==" << endl;
     return 1;
 }
 
