@@ -127,7 +127,6 @@ int readSTLBinary(char* fileName){
         file.read((char *)&numberOfTriangles, sizeof(unsigned int));
         cout << "Number of triangles: " << numberOfTriangles << endl;
         for(unsigned int i=0; i<numberOfTriangles; i++){
-            //if ( (numberOfTriangles/(i+1)) % 10 == 1) cout << ".";
             Triangle t;
             file.read((char *)&t.normal[0], sizeof(float));
             file.read((char *)&t.normal[1], sizeof(float));
@@ -144,7 +143,6 @@ int readSTLBinary(char* fileName){
             file.read((char *)&t.s, sizeof(unsigned short));
             mesh.push_back(t);
         }
-        cout << endl;
     }else{
         cout << "Error: could not open file " << fileName << endl;
         file.close();
@@ -207,22 +205,11 @@ int writeDAE(string fileName){
     file <<"        <geometry id='Cube'>" << endl;
     file <<"            <mesh>" << endl;
     file <<"                <source id='mesh-positions'>" << endl;
-    //file <<"                    <float_array id='mesh-positions-array' count='"<< 12 <<"'>" << endl;
-    //file <<"                    <float_array id='mesh-positions-array' count='"<< numberOfTriangles*3*3 <<"'>" << endl;
     file <<"                    <float_array id='mesh-positions-array' count='"<< vertices.size()*3 <<"'>" << endl;
-
-    /*for(unsigned int i=0; i<numberOfTriangles; i++){
-        //file << mesh[i].normal[0] <<" "<< mesh[i].normal[1]  <<" "<<mesh[i].normal[2] <<endl;
-        file << mesh[i].vertices[0][0] << " " << mesh[i].vertices[0][1]  << " " << mesh[i].vertices[0][2] << endl;
-        file << mesh[i].vertices[1][0] << " " << mesh[i].vertices[1][1]  << " " << mesh[i].vertices[1][2] << endl;
-        file << mesh[i].vertices[2][0] << " " << mesh[i].vertices[2][1]  << " " << mesh[i].vertices[2][2] << endl;
-    }*/
 
     for(unsigned int i=0; i<vertices.size(); i++){
         file << vertices[i].v[0] << " " << vertices[i].v[1] << " " << vertices[i].v[2] << endl;
     }
-
-    //file <<"-49.9658 -50.1369 50.0342" << endl;
 
     file <<"                    </float_array>" << endl;
     file <<"                    <technique_common>" << endl;
@@ -234,14 +221,7 @@ int writeDAE(string fileName){
     file <<"                    </technique_common>" << endl;
     file <<"                </source>" << endl;
     file <<"                <source id='mesh-normals'>" << endl;
-    //file <<"                    <float_array id='mesh-normals-array' count='3'>" << endl;
-    //file <<"                    <float_array id='mesh-normals-array' count='" <<numberOfTriangles*3<< "'>" << endl;
     file <<"                    <float_array id='mesh-normals-array' count='" <<normals.size()*3<< "'>" << endl;
-
-    /*for(unsigned int i=0; i<numberOfTriangles; i++){
-        file << mesh[i].normal[0] <<" "<< mesh[i].normal[1]  <<" "<<mesh[i].normal[2] <<endl;
-        //file << 0 << " " << 0 << " " << 1 <<endl;
-    }*/
 
     for(unsigned int i=0; i<normals.size(); i++){
         file << normals[i].v[0] << " " << normals[i].v[1] << " " << normals[i].v[2] << endl;
@@ -259,25 +239,16 @@ int writeDAE(string fileName){
     file <<"                <vertices id='mesh-vertices'>" << endl;
     file <<"                    <input semantic='POSITION' source='#mesh-positions'/>" << endl;
     file <<"                </vertices>" << endl;
-    //file <<"                <triangles count='2'>" << endl;
     file <<"                <triangles count='"<< numberOfTriangles << "'>" << endl;
     file <<"                    <input offset='0' semantic='VERTEX' source='#mesh-vertices'/>" << endl;
     file <<"                    <input offset='1' semantic='NORMAL' source='#mesh-normals'/>" << endl;
     file <<"                    <p>" << endl;
-
-    // v1 n
-    /*for(unsigned int i=0; i<numberOfTriangles*3; i+=3){
-        file << (i+0) << " " << (int)(i/3) << " " << (i+1) << " " << (int)(i/3) << " " << (i+2) << " " << (int)(i/3) << endl;
-    }*/
 
     for(unsigned int i=0; i<mesh.size(); i++){
         file << mesh[i].verticesId[0] << " " << mesh[i].normalId << " "
              << mesh[i].verticesId[1] << " " << mesh[i].normalId << " "
              << mesh[i].verticesId[2] << " " << mesh[i].normalId << " " << endl;
     }
-
-   // file <<"                    1 0  0 0  3 0" << endl;
-    //file <<"                    3 1  1 1  2 1" << endl;
 
     file <<"                    </p>" << endl;
     file <<"                </triangles>" << endl;
@@ -295,7 +266,6 @@ int writeDAE(string fileName){
     file <<"        <instance_visual_scene url='#mesh-scene'/>" << endl;
     file <<"    </scene>" << endl;
     file <<"</COLLADA>" << endl;
-
     return 1;
 }
 
