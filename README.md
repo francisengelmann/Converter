@@ -3,9 +3,9 @@ Converter
 
 Converter converts different file formats into other file formats.
 
-Currently supported:
+Currently supported file formats:
 
-* STL -> DAE
+* STL (ascii/binary) -> DAE
 
 Installation
 ============
