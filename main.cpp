@@ -117,10 +117,6 @@ int readSTLBinary(char* fileName){
     ifstream file (fileName, ios::in|ios::binary|ios::ate);
 
     if (file.is_open()){
-        //file.seekg(0,file.end);
-        //int length = file.tellg();
-        //file.seekg(0,file.beg);
-
         //jump over the first 80chars, they only contain the name and blabla
         file.seekg(80);
         //read total number of triangles
@@ -181,7 +177,7 @@ int readSTL(char * fileName){
 int writeDAE(string fileName){
     cout << "Preparing data for .DAE export." << endl;
     fillVerticesAndNormals();
-    cout << "Exporting DAE..." << endl;
+    cout << "Starting export..." << endl;
     if(numberOfTriangles==0)
     {
         cout << "ERROR: number of read triangles is zero. No data available to export." << endl;
@@ -266,6 +262,7 @@ int writeDAE(string fileName){
     file <<"        <instance_visual_scene url='#mesh-scene'/>" << endl;
     file <<"    </scene>" << endl;
     file <<"</COLLADA>" << endl;
+    cout << "==DONE==" << endl;
     return 1;
 }
 
