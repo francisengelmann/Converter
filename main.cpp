@@ -175,7 +175,7 @@ int readSTL(char * fileName){
 }
 
 int writeDAE(string fileName){
-    cout << "Preparing data for .DAE export." << endl;
+    cout << "Preparing data for .DAE export..." << endl;
     fillVerticesAndNormals();
     cout << "Starting export..." << endl;
     if(numberOfTriangles==0)
@@ -273,6 +273,7 @@ void printUsage(){
 int main(int argc, char* args[])
 {
     numberOfTriangles = 0;
+    vector<string> strings;
     switch(argc){
         case 3: //normal behavior
             if(!readSTL(args[1])) return 1;
@@ -280,6 +281,15 @@ int main(int argc, char* args[])
             break;
         case 2: //normal behavior with default output file name
             if(!readSTL(args[1])) return 1;
+            /*split(strings,args[1],is_any_of("."));
+            if(strings.size() < 2){
+                cout << "Input file contains no .stl extension!";
+                return 0;
+            }
+            strings[1].append(".dae");
+
+            cout << strings[1];*/
+
             if(!writeDAE("output.dae")) return 1;
             break;
         case 1:
