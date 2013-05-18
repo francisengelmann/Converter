@@ -15,6 +15,8 @@ In the console (Terminal) go to the directory of this README.
 
 * Build the poject using make: `make`
 
-* Execute the project: `./Converter ../example.stl`
+* Install the project: `sudo make install`
+
+* Execute the project: `Converter ../example.stl`
 
 
